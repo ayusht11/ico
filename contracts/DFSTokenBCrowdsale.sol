@@ -15,7 +15,7 @@ import "./MilestoneStratergy.sol";
  */
 contract DFSTokenBCrowdsale is MilestoneStratergy, CappedCrowdsale, RefundableCrowdsale {
 
-  function OrmCoCrowdsale(uint _startTime, uint _endTime, uint _initialRate, uint _goal,
+  function DFSTokenBCrowdsale(uint _startTime, uint _endTime, uint _initialRate, uint _goal,
     uint _initialCap, address _wallet, uint[24] _milestones)
     FinalizableCrowdsale()
     RefundableCrowdsale(_goal)
@@ -43,7 +43,7 @@ contract DFSTokenBCrowdsale is MilestoneStratergy, CappedCrowdsale, RefundableCr
   function setMilestone() internal onlyNextMilestone {
     rate = currentMilestone.price;
 
-    uint weiLeftFromLastMilestoneCap = previousMilestone - totalSupply;
+    uint weiLeftFromLastMilestoneCap = previousMilestone.weiCap - weiRaised;
     cap = currentMilestone.weiCap + weiLeftFromLastMilestoneCap;
   }
 
