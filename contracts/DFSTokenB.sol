@@ -3,14 +3,14 @@ pragma solidity ^0.4.11;
 import "zeppelin-solidity/contracts/token/MintableToken.sol";
 
 /**
- * @title DFSTokenA
+ * @title DFSTokenB
  * @dev Very simple ERC20 Token that can be minted.
  * It is meant to be used in a crowdsale contract.
  */
-contract DFSTokenA is MintableToken {
+contract DFSTokenB is MintableToken {
 
-  string public name = "Tokeny Test 01";
-  string public symbol = "TKNY01";
+  string public name = "DFS Token B";
+  string public symbol = "DFSB";
   uint256 public decimals = 18;
 
   /**
@@ -20,9 +20,7 @@ contract DFSTokenA is MintableToken {
    * http://vessenes.com/the-erc20-short-address-attack-explained/
    */
   modifier onlyPayloadSize(uint size) {
-    if(msg.data.length != size + 4) {
-      throw;
-    }
+    if(msg.data.length != size + 4) revert();
     _;
   }
 
