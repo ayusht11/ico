@@ -11,8 +11,6 @@ contract MilestoneStratergy is Ownable {
 
   using SafeMath for uint;
 
-  uint public constant MAX_MILESTONE = 8;
-
   /**
   * Define pricing schedule using milestones.
   */
