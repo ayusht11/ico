@@ -1,4 +1,4 @@
-const DFSTokenACrowdsale = artifacts.require("./DFSTokenACrowdsale.sol");
+const DFSTokenBCrowdsale = artifacts.require("./DFSTokenBCrowdsale.sol");
 
 const _startTime = 1509017400;
 const _endTime = 1509087400;
@@ -18,6 +18,6 @@ const _milestones = [
 ];
 
 module.exports = function(deployer) {
-  deployer.deploy(DFSTokenACrowdsale, _startTime, _endTime, _initialRate, _goal, _initialCap, _wallet,
+  deployer.deploy(DFSTokenBCrowdsale, _startTime, _endTime, _initialRate, _goal, _initialCap, _wallet,
     _milestones, { from: "0xecd0dbd7ac6e376945d3c3a02035e8a2448ecb06" });
 };
