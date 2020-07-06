@@ -29,29 +29,29 @@ contract DFSTokenB is MintableToken {
   }
 
   modifier afterThreeYears {
-    require(now > creationTime + (3 * 365 * 24 * 60 * 60))
+    require(now > creationTime + (3 * 365 * 24 * 60 * 60));
     _;
   }
 
   function DFSTokenB() {
-    reationTime = now;
+    creationTime = now;
   }
 
   function transfer(address _to, uint256 _value) public onlyPayloadSize(2 * 32) returns (bool) {
-    super.transfer(_to, _value);
+    return super.transfer(_to, _value);
   }
 
   function increaseApproval(address _spender, uint _addedValue)
-    onlyPayloadSize(2 * 32) returns (bool success) {
-    super.increaseApproval(_spender, _addedValue); 
+    onlyPayloadSize(2 * 32) returns (bool) {
+    return super.increaseApproval(_spender, _addedValue); 
   }
 
   function decreaseApproval(address _spender, uint _addedValue)
-    onlyPayloadSize(2 * 32) returns (bool success) {
-    super.decreaseApproval(_spender, _addedValue); 
+    onlyPayloadSize(2 * 32) returns (bool) {
+    return super.decreaseApproval(_spender, _addedValue); 
   }
 
-  function claimVestedReserve() onlyOwner afterThreeYears{
+  function claimVestedReserve() onlyOwner afterThreeYears {
     balances[msg.sender] = VESTED_RESERVE_TOKENS;
   }
   
