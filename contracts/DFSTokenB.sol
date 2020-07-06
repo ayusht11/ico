@@ -11,7 +11,11 @@ contract DFSTokenB is MintableToken {
 
   string public name = "DFS Token B";
   string public symbol = "DFSB";
-  uint256 public decimals = 18;
+  uint public decimals = 18;
+  uint public creationTime;
+
+  // 30% of tokens meant for Founding Team, Core Dev & Operating Teams, Advisory Team
+  uint constant VESTED_RESERVE_TOKENS = 30000000;
 
   /**
    *
@@ -22,6 +26,15 @@ contract DFSTokenB is MintableToken {
   modifier onlyPayloadSize(uint size) {
     if(msg.data.length != size + 4) revert();
     _;
+  }
+
+  modifier afterThreeYears {
+    require(now > creationTime + (3 * 365 * 24 * 60 * 60))
+    _;
+  }
+
+  function DFSTokenB() {
+    reationTime = now;
   }
 
   function transfer(address _to, uint256 _value) public onlyPayloadSize(2 * 32) returns (bool) {
@@ -36,6 +49,10 @@ contract DFSTokenB is MintableToken {
   function decreaseApproval(address _spender, uint _addedValue)
     onlyPayloadSize(2 * 32) returns (bool success) {
     super.decreaseApproval(_spender, _addedValue); 
+  }
+
+  function claimVestedReserve() onlyOwner afterThreeYears{
+    balances[msg.sender] = VESTED_RESERVE_TOKENS;
   }
   
 }
