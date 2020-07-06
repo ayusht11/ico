@@ -40,8 +40,8 @@ contract MilestoneStratergy is Ownable {
   modifier onlyNextMilestone {
     Milestone currentMilestone = getCurrentMilestone();
     
-    if (currentMilestone != previousMilestone && (currentMilestone.index - previousMilestone.index) == 1)
-      _;
+    require(currentMilestone != previousMilestone && (currentMilestone.index - previousMilestone.index) == 1);
+    _;
   }
 
   /// @dev Contruction, creating a list of milestones

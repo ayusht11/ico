@@ -11,18 +11,19 @@ import "./MilestoneStratergy.sol";
  * In this crowdsale we are providing following extensions:
  * CappedCrowdsale - sets a max boundary for raised funds
  * RefundableCrowdsale - set a min goal to be reached and returns funds if it's not met
+ * MilestoneStratergy - sets various milestone parameters like weiCap and price for the milestone
  */
 contract DFSTokenACrowdsale is MilestoneStratergy, CappedCrowdsale, RefundableCrowdsale {
 
-  function OrmCoCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _initialRate, uint256 _goal,
-     uint256 _initialCap, address _wallet, uint[24] _milestones)
+  function OrmCoCrowdsale(uint _startTime, uint _endTime, uint _initialRate, uint _goal,
+    uint _initialCap, address _wallet, uint[24] _milestones)
     FinalizableCrowdsale()
     RefundableCrowdsale(_goal)
     CappedCrowdsale(_initialCap)
     MilestoneStratergy(_milestones)
     Crowdsale(_startTime, _endTime, _initialRate, _wallet)
   { 
-    // Sum of all the milestone based tokenCaps 
+    // Sum of all the milestone based weiCaps
     uint totalCap;
 
     for(uint i; i < 8; i++) {
@@ -42,8 +43,8 @@ contract DFSTokenACrowdsale is MilestoneStratergy, CappedCrowdsale, RefundableCr
   function setMilestone() internal onlyNextMilestone {
     rate = currentMilestone.price;
 
-    uint tokensLeftFromLastMilestoneCap = previousMilestone - totalSupply;
-    cap = currentMilestone.tokenCap + tokensLeftFromLastMilestoneCap;
+    uint weiLeftFromLastMilestoneCap = previousMilestone - totalSupply;
+    cap = currentMilestone.weiCap + weiLeftFromLastMilestoneCap;
   }
 
   // Override buyTokens of Crowdsale
