@@ -1,0 +1,19 @@
+{
+  "name": "ormco",
+  "version": "1.0.0",
+  "description": "OrmCo ICO",
+  "main": "truffle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://ayusht11@bitbucket.org/ayusht11/ormco.git"
+  },
+  "author": "Ayush Tiwari",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/ayusht11/ormco#readme",
+  "dependencies": {
+    "truffle": "^3.4.11"
+  }
+}
