@@ -3,14 +3,13 @@
  */
 pragma solidity ^0.4.6;
 
-import "./Crowdsale.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /// @dev Time milestone based pricing with special support for pre-ico deals.
 contract MilestoneStratergy is Ownable {
 
-  using SafeMathLib for uint;
+  using SafeMath for uint;
 
   uint public constant MAX_MILESTONE = 8;
 
@@ -28,48 +27,49 @@ contract MilestoneStratergy is Ownable {
       // How many tokens per ether you will get after this milestone has been passed
       uint price;
 
-      //how many tokens are available between two milestones
-      uint tokenCap;
+      //how many wei can be raised     between two milestones
+      uint weiCap;
   }
 
   // Store milestones in a fixed array, so that it can be seen in a blockchain explorer
   Milestone[8] public milestones;
 
   Milestone previousMilestone;
+  Milestone currentMilestone;
 
   modifier onlyNextMilestone {
-    Milestone currentMilestone = getCurrentMilestone();
+    currentMilestone = getCurrentMilestone();
     
-    require(currentMilestone != previousMilestone && (currentMilestone.index - previousMilestone.index) == 1);
+    require((currentMilestone.index - previousMilestone.index) == 1);
     _;
   }
 
   /// @dev Contruction, creating a list of milestones
-  /// @param _milestones uint[] milestones Pairs of (time, price, tokenCap)
+  /// @param _milestones uint[] milestones Pairs of (time, price, weiCap)
   function MilestoneStratergy(uint[24] _milestones) {
 // uint is initialized by compiler with 0
     uint lastTimestamp;
 
     // uint is initialized by compiler with 0
-    for(uint i; i < 8; i++) {
+    for(uint i; i < 8; ++i) {
       // No invalid steps
-      if((lastTimestamp != 0) && (milestones[i].time <= lastTimestamp)) revert();
-      // tokenCap must be greater that or equal to 0
+      if((lastTimestamp != 0) && ( _milestones[i * 3] <= lastTimestamp)) revert();
+      // weiCap must be greater that or equal to 0
       if(_milestones[(i * 3) + 2] < 0) revert();
 
       milestones[i].index = i;
       milestones[i].time = _milestones[i * 3];
       milestones[i].price = _milestones[(i * 3) + 1];
-      milestones[i].tokenCap = _milestones[(i * 3) + 2];
+      milestones[i].weiCap = _milestones[(i * 3) + 2];
 
       lastTimestamp = milestones[i].time;
     }
 
     // Last milestone price must be zero, terminating the crowdale
-    if(milestones[7].price != 0 || milestones[7].tokenCap != 0) revert();
+    if(milestones[7].price != 0 || milestones[7].weiCap != 0) revert();
 
     //set initialMilestone
-    previousMilestone = getCurrentMilestone();
+    previousMilestone = milestones[0];
   }
 
   /// @dev Iterate through milestones. You reach end of milestones when price = 0
@@ -94,11 +94,6 @@ contract MilestoneStratergy is Ownable {
     return getLastMilestone().time;
   }
 
-  function isSane(address _crowdsale) public constant returns(bool) {
-    Crowdsale crowdsale = Crowdsale(_crowdsale);
-    return crowdsale.startsAt() == getPricingStartsAt() && crowdsale.endsAt() == getPricingEndsAt();
-  }
-
   /// @dev Get the current milestone or bail out if we are not in the milestone periods.
   /// @return {[type]} [description]
   function getCurrentMilestone() internal constant returns (Milestone) {
@@ -117,17 +112,17 @@ contract MilestoneStratergy is Ownable {
     return getCurrentMilestone().price;
   }
 
-  /// @dev Get the current tokenCap.
-  /// @return The current tokenCap or 0 if we are outside milestone period
-  function getCurrentTokenCap() public constant returns (uint result) {
-    return getCurrentMilestone().tokenCap;
+  /// @dev Get the current weiCap.
+  /// @return The current weiCap or 0 if we are outside milestone period
+  function getCurrentWeiCap() public constant returns (uint result) {
+    return getCurrentMilestone().weiCap;
   }
 
   function () payable {
-    throw; // No money on this contract
+    revert(); // No money on this contract
   }
 
   // Override it and add logic
-  function setMilestone() internal onlyNewMilestone {}
+  function setMilestone() internal onlyNextMilestone {}
 
 }
