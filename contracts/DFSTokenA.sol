@@ -31,7 +31,7 @@ contract DFSTokenA is MintableToken {
   }
 
   modifier afterOneYear {
-    require(now > creationTime + (365 * 24 * 60 * 60))
+    require(now > creationTime + (365 * 24 * 60 * 60));
     _;
   }
 
@@ -45,12 +45,12 @@ contract DFSTokenA is MintableToken {
   }
 
   function increaseApproval(address _spender, uint _addedValue)
-    onlyPayloadSize(2 * 32) returns (bool success) {
+    onlyPayloadSize(2 * 32) returns (bool) {
     super.increaseApproval(_spender, _addedValue); 
   }
 
   function decreaseApproval(address _spender, uint _addedValue)
-    onlyPayloadSize(2 * 32) returns (bool success) {
+    onlyPayloadSize(2 * 32) returns (bool) {
     super.decreaseApproval(_spender, _addedValue); 
   }
   
