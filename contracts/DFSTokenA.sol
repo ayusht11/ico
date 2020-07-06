@@ -9,9 +9,15 @@ import "zeppelin-solidity/contracts/token/MintableToken.sol";
  */
 contract DFSTokenA is MintableToken {
 
-  string public name = "Tokeny Test 01";
-  string public symbol = "TKNY01";
-  uint256 public decimals = 18;
+  string public name = "DFS Token A";
+  string public symbol = "DFS";
+  uint public decimals = 18;
+  uint public creationTime;
+  
+  // 29% of tokens meant for Reward Pool, Core Dev & Operating Teams, Advisory Team & ICO Bounties
+  uint constant NON_VESTED_RESERVE_TOKENS = 116000000;
+  // 6% of tokens meant for Founding Team
+  uint constant VESTED_RESERVE_TOKENS = 24000000;
 
   /**
    *
@@ -20,10 +26,18 @@ contract DFSTokenA is MintableToken {
    * http://vessenes.com/the-erc20-short-address-attack-explained/
    */
   modifier onlyPayloadSize(uint size) {
-    if(msg.data.length != size + 4) {
-      throw;
-    }
+    if(msg.data.length != size + 4) revert();
     _;
+  }
+
+  modifier afterOneYear {
+    require(now > creationTime + (365 * 24 * 60 * 60))
+    _;
+  }
+
+  function DFSTokenA() {
+    creationTime = now;
+    balances[msg.sender] = NON_VESTED_RESERVE_TOKENS;
   }
 
   function transfer(address _to, uint256 _value) public onlyPayloadSize(2 * 32) returns (bool) {
@@ -40,4 +54,8 @@ contract DFSTokenA is MintableToken {
     super.decreaseApproval(_spender, _addedValue); 
   }
   
+  function claimVestedReserve() onlyOwner afterOneYear{
+    balances[msg.sender] = VESTED_RESERVE_TOKENS;
+  }
+
 }
